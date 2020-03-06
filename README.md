@@ -21,6 +21,8 @@ This is a frontend and backend decoupled full-stack **practice** web app with Mo
 - Install [Nodejs](https://www.nodejs.org) and [MongoDB](https://docs.mongodb.com/guides/server/install)
 - Open your terminal, run `mongod` 
 - Navigate to the project
+- Import MongoDB data 
+  + `mongoimport --db=movie_rating --collection=movies --file=movies.json`
 - Start backend
   + `cd backend`
   + `npm install`
