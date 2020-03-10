@@ -3,7 +3,7 @@ const Rating = require('../models/Rating');
 
 module.exports.controller = app => {
   // add a new movie
-  app.post('/movies', (req, res) => {
+  app.post('/movies', async (req, res) => {
     const movie = new Movie({
       name: req.body.name,
       description: req.body.description,
@@ -12,74 +12,58 @@ module.exports.controller = app => {
       runtime: req.body.runtime,
     });
 
-    movie.save((err, movie) => {
-      if (err) {
-        console.log(err);
-      }
-      res.send(movie);
-    });
+    await movie.save();
+    res.send(movie);
   });
 
   // fetch total number of movies
-  app.get('/movies/total', (req, res) => {
-    Movie.estimatedDocumentCount({}, (err, count) => {
-      if (err) {
-        console.log(err);
-      }
-      res.send({ total: count });
-    });
+  app.get('/movies/total', async (req, res) => {
+    const total = await Movie.estimatedDocumentCount({});
+
+    res.send({ total });
   });
 
   // fetch all the movies
-  app.get('/movies', (req, res) => {
+  app.get('/movies', async (req, res) => {
     let { offset, limit } = req.query;
 
     offset = parseInt(offset) || 0;
     limit = Math.min(parseInt(limit) || 6, 6);
 
-    Movie.find({}, 'name description released genre runtime')
+    const movies = await Movie.find(
+      {},
+      'name description released genre runtime'
+    )
       .sort({ released: -1 })
       .skip(offset)
-      .limit(limit)
-      .exec((err, movies) => {
-        if (err) {
-          console.log(err);
-        }
-        res.send({ movies });
-      });
+      .limit(limit);
+
+    res.send({ movies });
   });
 
   // fetch a single movie
-  app.get('/movies/:id', (req, res) => {
-    Movie.findById(
+  app.get('/movies/:id', async (req, res) => {
+    const movie = await Movie.findById(
       req.params.id,
-      'name description released genre runtime',
-      (err, movie) => {
-        if (err) {
-          console.log(err);
-        }
-        res.send(movie);
-      }
+      'name description released genre runtime'
     );
+    res.send(movie);
   });
 
   // rate a movie
-  app.post('/movies/rate/:id', (req, res) => {
+  app.post('/movies/rate/:id', async (req, res) => {
     const rating = new Rating({
       movieID: req.params.id,
       userID: req.body.userID,
       rate: req.body.rate,
     });
 
-    rating.save((err, rating) => {
-      if (err) {
-        console.log(err);
-      }
-      res.send({
-        movieID: rating.movieID,
-        userID: rating.userID,
-        rate: rating.rate,
-      });
+    await rating.save();
+
+    res.send({
+      movieID: rating.movieID,
+      userID: rating.userID,
+      rate: rating.rate,
     });
   });
 };

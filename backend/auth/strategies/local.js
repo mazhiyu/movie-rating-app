@@ -11,25 +11,22 @@ module.exports.init = app => {
         usernameField: 'email',
         passwordField: 'password',
       },
-      (email, password, done) => {
-        User.getUserByEmail(email, (err, user) => {
-          if (err) {
-            return done(err);
-          }
+      async (email, password, done) => {
+        try {
+          const user = await User.getUserByEmail(email);
           if (!user) {
             return done(null, false);
           }
 
-          User.comparePassword(password, user.password, (err, isMatch) => {
-            if (err) {
-              console.log(err);
-            }
-            if (isMatch) {
-              return done(null, user);
-            }
+          const isMatch = await User.comparePassword(password, user.password);
+          if (!isMatch) {
             return done(null, false);
-          });
-        });
+          }
+
+          return done(null, user);
+        } catch (err) {
+          return done(err);
+        }
       }
     )
   );
@@ -38,10 +35,13 @@ module.exports.init = app => {
     // field `id` is virtual getter in mongoose, equal to '_id'
     done(null, user.id);
   });
-  passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-      done(err, user);
-    });
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await User.findById(id);
+      done(null, user);
+    } catch (err) {
+      done(err);
+    }
   });
 
   app.use(passport.initialize());
