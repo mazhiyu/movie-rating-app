@@ -30,38 +30,50 @@ app.use(logger('dev'));
 // parse application/json
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(cors({
-  credentials: true,
-  origin: 'http://localhost:8080'
-}));
-app.use(session({
-  secret: 'mysecret',
-  resave: true,
-  saveUninitialized: true,
-  cookie: { httpOnly: false }
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(
+  cors({
+    credentials: true,
+    origin: 'http://localhost:8080',
+  })
+);
+app.use(
+  session({
+    secret: 'mysecret',
+    resave: true,
+    saveUninitialized: true,
+    cookie: { httpOnly: false },
+  })
+);
 auth.init(app);
 // app.use(passport.initialize());
 // app.use(passport.session());
 
 // connect to mongodb
-mongoose.connect('mongodb://localhost/movie_rating', {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true
-}, () => {
-  console.log('Connection has been made');
-}).catch((err) => {
-  console.error('App starting error:', err.stack);
-  process.exit(1);
-});
+mongoose
+  .connect(
+    'mongodb://localhost/movie_rating',
+    {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useUnifiedTopology: true,
+    },
+    () => {
+      console.log('Connection has been made');
+    }
+  )
+  .catch(err => {
+    console.error('App starting error:', err.stack);
+    process.exit(1);
+  });
 
 // include controllers
 const dir = path.join(__dirname, 'controllers');
-fs.readdirSync(dir).forEach((file) => {
+fs.readdirSync(dir).forEach(file => {
   if (path.extname(file) === '.js') {
     const route = require(path.join(dir, file));
     route.controller(app);

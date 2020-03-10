@@ -1,21 +1,21 @@
 const passport = require('passport');
 const User = require('../models/User');
 
-module.exports.controller = (app) => {
+module.exports.controller = app => {
   // user register
   app.post('/users/register', (req, res) => {
     const { name, email, password } = req.body;
     const user = new User({
       name,
       email,
-      password
+      password,
     });
 
     User.createUser(user, (err, user) => {
       if (err) {
         console.log(err);
         res.status(422).json({
-          message: 'Something went wrong. Please try again after some time!'
+          message: 'Something went wrong. Please try again after some time!',
         });
       }
       res.send({ user });
@@ -23,11 +23,13 @@ module.exports.controller = (app) => {
   });
 
   // user login
-  app.post('/users/login',
+  app.post(
+    '/users/login',
     passport.authenticate('local', { failureRedirect: '/users/login' }),
     (req, res) => {
       res.redirect('/');
-    });
+    }
+  );
 
   // user logout
   app.get('/users/logout', (req, res) => {
@@ -45,7 +47,7 @@ module.exports.controller = (app) => {
   });
 };
 
-function isLoggedIn (req, res, next) {
+function isLoggedIn(req, res, next) {
   // console.log(req.session);
   if (req.isAuthenticated()) {
     return next();
