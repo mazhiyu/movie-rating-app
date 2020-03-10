@@ -15,12 +15,14 @@ module.exports.init = app => {
         try {
           const user = await User.getUserByEmail(email);
           if (!user) {
-            return done(null, false);
+            return done(null, false, {
+              message: `${email} doesn't exist!`,
+            });
           }
 
           const isMatch = await User.comparePassword(password, user.password);
           if (!isMatch) {
-            return done(null, false);
+            return done(null, false, { message: 'Incorrect password!' });
           }
 
           return done(null, user);
