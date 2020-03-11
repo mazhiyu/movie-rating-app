@@ -7,29 +7,29 @@
     </v-content>
 
     <v-footer color="indigo" app>
-      <span class="white--text">&copy; 2017-{{ new Date().getFullYear() }}</span>
+      <span class="white--text"
+        >&copy; 2017-{{ new Date().getFullYear() }}</span
+      >
     </v-footer>
   </v-app>
 </template>
 
 <script>
-import './assets/stylesheet/main.css'
-import AppNavigation from '@/components/AppNavigation.vue'
+import './assets/stylesheet/main.css';
+import AppNavigation from '@/components/AppNavigation.vue';
 
 export default {
   name: 'App',
 
   components: {
-    AppNavigation
+    AppNavigation,
   },
 
-  data () {
-    return {
-
-    }
+  data() {
+    return {};
   },
   props: {
-    source: String
-  }
-}
+    source: String,
+  },
+};
 </script>

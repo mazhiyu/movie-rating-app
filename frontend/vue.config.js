@@ -1,9 +1,7 @@
 module.exports = {
-  'transpileDependencies': [
-    'vuetify'
-  ],
+  transpileDependencies: ['vuetify'],
   runtimeCompiler: true,
   devServer: {
     // https: true
-  }
-}
+  },
+};

@@ -11,16 +11,20 @@
                     class="headline text-none text-justify pa-0"
                     text
                     v-bind:to="`/movies/${movie._id}`"
-                  >{{ movie.name }}</v-btn>
+                    >{{ movie.name }}</v-btn
+                  >
                 </div>
 
-                <span
-                  class="subtitle-1 grey--text"
-                >{{ movie.released }} ‧ {{ movie.genre }}‧ {{ movie.runtime }}</span>
+                <span class="subtitle-1 grey--text"
+                  >{{ movie.released }} ‧ {{ movie.genre }}‧
+                  {{ movie.runtime }}</span
+                >
               </div>
             </v-card-title>
 
-            <v-card-text class="text-justify">{{ movie.description }}</v-card-text>
+            <v-card-text class="text-justify">{{
+              movie.description
+            }}</v-card-text>
 
             <!-- <v-card-actions>
             <v-btn text color="purple">Rate this movie</v-btn>
@@ -30,58 +34,66 @@
         </v-col>
       </v-row>
 
-      <v-pagination v-model="page" :length="pageCount" circle @input="fetchMovies(page)"></v-pagination>
+      <v-pagination
+        v-model="page"
+        :length="pageCount"
+        circle
+        @input="fetchMovies(page)"
+      ></v-pagination>
     </v-container>
   </span>
 </template>
 
 <script>
-
 export default {
   name: 'HomeDisplay',
 
-  data () {
+  data() {
     return {
       activeLocale: 'en',
       movies: [],
 
       page: 1,
       pageSize: 3,
-      pageCount: null
-    }
+      pageCount: null,
+    };
   },
 
-  mounted () {
-    this.fetchTotalMovies()
-    this.fetchMovies()
+  mounted() {
+    this.fetchTotalMovies();
+    this.fetchMovies();
   },
 
   methods: {
-    async fetchTotalMovies () {
+    async fetchTotalMovies() {
       return this.axios({
         method: 'get',
-        url: '/movies/total'
-      }).then((response) => {
-        this.pageCount = Math.ceil(response.data.total / this.pageSize)
-      }).catch(() => { })
+        url: '/movies/total',
+      })
+        .then(response => {
+          this.pageCount = Math.ceil(response.data.total / this.pageSize);
+        })
+        .catch(() => {});
     },
-    async fetchMovies (page = 1, pageSize = 3) {
+    async fetchMovies(page = 1, pageSize = 3) {
       // const token = window.localStorage.getItem('auth') // for jwt
       return this.axios({
         method: 'get',
         url: '/movies',
         params: {
           offset: page > 0 ? (page - 1) * pageSize : 0,
-          limit: pageSize
+          limit: pageSize,
         },
         headers: {
           // Authorization: `JWT ${token}`, // for jwt
-          'Content-Type': 'application/json'
-        }
-      }).then((res) => {
-        this.movies = res.data.movies
-      }).catch(() => { })
-    }
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => {
+          this.movies = res.data.movies;
+        })
+        .catch(() => {});
+    },
   },
 
   watch: {
@@ -91,9 +103,8 @@ export default {
     // 'pagination.page': (page) => {
     //   this.fetchMovies(page)
     // }
-  }
-}
+  },
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

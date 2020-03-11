@@ -4,12 +4,12 @@
 
 <script>
 // @ is an alias to /src
-import HomeDisplay from '@/components/HomeDisplay.vue'
+import HomeDisplay from '@/components/HomeDisplay.vue';
 
 export default {
   name: 'Home',
   components: {
-    HomeDisplay
-  }
-}
+    HomeDisplay,
+  },
+};
 </script>

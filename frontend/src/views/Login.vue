@@ -44,10 +44,10 @@
 </template>
 
 <script>
-import bus from '@/bus'
+import bus from '@/bus';
 
 export default {
-  data () {
+  data() {
     return {
       valid: true,
       email: '',
@@ -55,42 +55,44 @@ export default {
 
       emailRules: [
         v => !!v || 'E-mail is required',
-        v => /\S+@\S+\.\S+/.test(v) || 'E-mail must be valid'
+        v => /\S+@\S+\.\S+/.test(v) || 'E-mail must be valid',
       ],
 
-      showPassword: false
-    }
+      showPassword: false,
+    };
   },
 
   methods: {
-    login () {
+    login() {
       if (this.$refs.form.validate()) {
         return this.axios({
           method: 'post',
           data: {
             email: this.email,
-            password: this.password
+            password: this.password,
           },
           url: '/users/login',
           headers: {
-            'Content-Type': 'application/json'
-          }
-        }).then((res) => {
-          // window.localStorage.setItem('auth', res.data.token) // for jwt
-          this.$swal('Great!', 'You are ready to start!', 'success')
-          bus.$emit('refreshUser')
-          this.$router.push({ name: 'Home' })
-        }).catch((err) => {
-          const msg = err.response.data.message
-          this.$swal('Oh oo!', `${msg}`, 'error')
-          this.$router.push({ name: 'Login' })
+            'Content-Type': 'application/json',
+          },
         })
+          .then(() => {
+            // window.localStorage.setItem('auth', res.data.token) // for jwt
+            this.$swal('Great!', 'You are ready to start!', 'success');
+            bus.$emit('refreshUser');
+            this.$router.push({ name: 'Home' });
+          })
+          .catch(err => {
+            const msg = err.response.data.message;
+            this.$swal('Oh oo!', `${msg}`, 'error');
+            this.$router.push({ name: 'Login' });
+          });
       }
     },
 
-    clear () {
-      this.$refs.form.reset()
-    }
-  }
-}
+    clear() {
+      this.$refs.form.reset();
+    },
+  },
+};
 </script>
