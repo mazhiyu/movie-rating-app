@@ -27,19 +27,17 @@
       <v-toolbar-title>Home</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hide-sm-and-down">
-        <v-btn v-if="currentUser" text v-bind:to="{ name: 'AddMovie' }"
+        <v-btn v-if="userInfo" text v-bind:to="{ name: 'AddMovie' }"
           >Add Movie</v-btn
         >
-        <v-btn v-if="currentUser" text class="text-none">{{
-          currentUser.email
+        <v-btn v-if="userInfo" text class="text-none">{{
+          userInfo.email
         }}</v-btn>
-        <v-btn v-if="!currentUser" text v-bind:to="{ name: 'Register' }"
+        <v-btn v-if="!userInfo" text v-bind:to="{ name: 'Register' }"
           >register</v-btn
         >
-        <v-btn v-if="!currentUser" text v-bind:to="{ name: 'Login' }"
-          >login</v-btn
-        >
-        <v-btn v-if="currentUser" text @click="logout">Logout</v-btn>
+        <v-btn v-if="!userInfo" text v-bind:to="{ name: 'Login' }">login</v-btn>
+        <v-btn v-if="userInfo" text @click="logout">Logout</v-btn>
       </v-toolbar-items>
     </v-app-bar>
   </span>
@@ -55,7 +53,7 @@ export default {
   data() {
     return {
       drawer: null,
-      currentUser: null,
+      userInfo: null,
     };
   },
 
@@ -68,10 +66,10 @@ export default {
     async fetchUser() {
       return this.axios({
         method: 'get',
-        url: '/users/current',
+        url: '/users/info',
       })
         .then(response => {
-          this.currentUser = response.data.currentUser;
+          this.userInfo = response.data.userInfo;
         })
         .catch(() => {});
     },

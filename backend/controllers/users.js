@@ -52,10 +52,10 @@ module.exports.controller = app => {
     res.send();
   });
 
-  // current user
-  app.get('/users/current', isLoggedIn, (req, res) => {
+  // user info
+  app.get('/users/info', isLoggedIn, (req, res) => {
     if (req.user) {
-      res.send({ currentUser: req.user });
+      res.send({ userInfo: req.user });
     } else {
       res.status(403).send({ success: false, msg: 'Unauthorized.' });
     }
