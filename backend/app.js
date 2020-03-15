@@ -9,6 +9,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const rfs = require('rotating-file-stream');
+const env = process.env.NODE_ENV || 'development';
 
 // const passport = require('passport');
 const auth = require('./auth/strategies/local');
@@ -22,7 +24,23 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+const logDir = path.join(__dirname, 'logs');
+// ensure log directory exists
+fs.existsSync(logDir) || fs.mkdirSync(logDir);
+
+if (env === 'development') {
+  app.use(logger('dev'));
+} else {
+  const logStream = rfs.createStream('server.log', {
+    interval: '1d', // rotate daily
+    intervalBoundary: true,
+    initialRotation: true,
+    path: logDir,
+  });
+
+  app.use(logger('combined', { stream: logStream }));
+}
+
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
