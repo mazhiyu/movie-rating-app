@@ -10,15 +10,13 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const rfs = require('rotating-file-stream');
-const env = process.env.NODE_ENV || 'development';
 
-// const passport = require('passport');
 const auth = require('./auth/strategies/local');
 
-// const indexRouter = require('./routes/index');
-// const usersRouter = require('./routes/users');
-
 const app = express();
+
+const env = app.get('env');
+const config = require('./config/config')[env];
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -57,25 +55,26 @@ app.use(
 app.use(
   cors({
     credentials: true,
-    origin: 'http://localhost:8080',
+    origin: config.cors.allowOrigin,
   })
 );
 app.use(
   session({
-    secret: 'mysecret',
+    secret: config.sessionSecret,
     resave: true,
     saveUninitialized: true,
     cookie: { httpOnly: false },
   })
 );
 auth.init(app);
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 // connect to mongodb
+const {
+  db: { host, port, name },
+} = config;
 mongoose
   .connect(
-    'mongodb://localhost/movie_rating',
+    `mongodb://${host}:${port}/${name}`,
     {
       useNewUrlParser: true,
       useCreateIndex: true,
@@ -98,9 +97,6 @@ fs.readdirSync(dir).forEach(file => {
     route.controller(app);
   }
 });
-
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
